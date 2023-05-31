@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include <pybind11/pybind11.h>
 
 extern "C" {
@@ -17,7 +18,7 @@ py::bytes decompress(py::bytes img, TJPF pixelformat, bool fastupsample, bool fa
 
 	tjInstance = tj3Init(TJINIT_DECOMPRESS);
 	if (tjInstance == NULL) {
-		throw std::exception(tj3GetErrorStr(tjInstance));
+		throw std::runtime_error(tj3GetErrorStr(tjInstance));
 	}
 
 	std::string_view v = std::string_view(img);
@@ -27,7 +28,7 @@ py::bytes decompress(py::bytes img, TJPF pixelformat, bool fastupsample, bool fa
 
 	result = tj3DecompressHeader(tjInstance, jpegBuf, jpegSize);
 	if (result != 0) {
-		throw std::exception(tj3GetErrorStr(tjInstance));
+		throw std::runtime_error(tj3GetErrorStr(tjInstance));
 	}
 
 	width = tj3Get(tjInstance, TJPARAM_JPEGWIDTH);
@@ -43,24 +44,24 @@ py::bytes decompress(py::bytes img, TJPF pixelformat, bool fastupsample, bool fa
 
 	if (fastupsample) {
 		if (tj3Set(tjInstance, TJPARAM_FASTUPSAMPLE, 1) != 0) {
-			throw std::exception(tj3GetErrorStr(tjInstance));
+			throw std::runtime_error(tj3GetErrorStr(tjInstance));
 		}
 	}
 	if (fastdct) {
 		if (tj3Set(tjInstance, TJPARAM_FASTDCT, 1) != 0) {
-			throw std::exception(tj3GetErrorStr(tjInstance));
+			throw std::runtime_error(tj3GetErrorStr(tjInstance));
 		}
 	}
 
 	imgSize = width * height * tjPixelSize[pixelformat];
 	imgBuf = static_cast<unsigned char *>(tj3Alloc(imgSize));
 	if (imgBuf == NULL) {
-		throw std::exception(tj3GetErrorStr(tjInstance));
+		throw std::runtime_error(tj3GetErrorStr(tjInstance));
 	}
 
 	result = tj3Decompress8(tjInstance, jpegBuf, jpegSize, imgBuf, 0, pixelformat);
 	if (result != 0) {
-		throw std::exception(tj3GetErrorStr(tjInstance));
+		throw std::runtime_error(tj3GetErrorStr(tjInstance));
 	}
 
 	py::bytes out(std::string(reinterpret_cast<char *>(imgBuf), imgSize));
@@ -82,7 +83,7 @@ py::bytes transform(py::bytes img, TJXOP op, int x, int y, int w, int h,
 
 	tjInstance = tj3Init(TJINIT_TRANSFORM);
 	if (tjInstance == NULL) {
-		throw std::exception(tj3GetErrorStr(tjInstance));
+		throw std::runtime_error(tj3GetErrorStr(tjInstance));
 	}
 
 	std::string_view v = std::string_view(img);
@@ -133,7 +134,7 @@ py::bytes transform(py::bytes img, TJXOP op, int x, int y, int w, int h,
 		for (unsigned char *dstBuf : dstBufs) {
 			tj3Free(dstBuf);
 		}
-		throw std::exception(tj3GetErrorStr(tjInstance));
+		throw std::runtime_error(tj3GetErrorStr(tjInstance));
 	}
 
 	py::bytes out(std::string(reinterpret_cast<char *>(dstBufs[0]), dstSizes[0]));
