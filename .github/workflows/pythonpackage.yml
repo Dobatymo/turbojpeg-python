@@ -25,6 +25,23 @@ jobs:
       with:
         path: ./wheelhouse/*.whl
 
+  build_wheels_macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'true'
+    - name: Build wheels
+      uses: pypa/cibuildwheel@v2.12.3
+      env:
+        CIBW_BEFORE_ALL: "sh linux-build.sh"
+        CIBW_BEFORE_BUILD: echo {project}/libjpeg-turbo-build
+        CIBW_SKIP: "cp36-* pp*"
+        CIBW_REPAIR_WHEEL_COMMAND: "DYLD_LIBRARY_PATH=/project/libjpeg-turbo-build delocate-wheel -w {dest_dir} -v {wheel}"
+    - uses: actions/upload-artifact@v3
+      with:
+        path: ./wheelhouse/*.whl
+
   build_wheels_windows:
     runs-on: windows-latest
     strategy:
