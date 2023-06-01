@@ -18,7 +18,7 @@ jobs:
       env:
         CIBW_BEFORE_ALL: "sh linux-build.sh"
         CIBW_BEFORE_BUILD: echo {project}/libjpeg-turbo-build
-        CIBW_SKIP: "cp36-* pp*"
+        CIBW_SKIP: "cp36-* pp* *-musllinux*"
         CIBW_ARCHS_LINUX: auto64
         CIBW_REPAIR_WHEEL_COMMAND: "LD_LIBRARY_PATH=/project/libjpeg-turbo-build auditwheel repair -w {dest_dir} {wheel}"
     - uses: actions/upload-artifact@v3
@@ -55,7 +55,7 @@ jobs:
         submodules: 'true'
     - uses: actions/setup-python@v4
       with:
-        python-version: '3.8' 
+        python-version: '3.8'
     - uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: ${{ matrix.arch }}

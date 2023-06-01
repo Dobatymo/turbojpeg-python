@@ -1,6 +1,7 @@
 from glob import glob
-from setuptools import setup
+
 from pybind11.setup_helpers import Pybind11Extension, build_ext
+from setuptools import setup
 
 ext_modules = [
     Pybind11Extension(
@@ -13,7 +14,7 @@ ext_modules = [
     ),
 ]
 
-with open("readme.md", "r", encoding="utf-8") as fr:
+with open("readme.md", encoding="utf-8") as fr:
     long_description = fr.read()
 
 setup(
