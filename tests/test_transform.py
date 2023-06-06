@@ -8,7 +8,8 @@ from PIL import Image
 from skimage.metrics import structural_similarity
 
 import turbojpeg
-from turbojpeg import CS, DU, OP, PF, SAMP, compress, decompress, transform
+from turbojpeg import (CS, DU, OP, PF, SAMP, compress, decompress,
+                       decompress_header, transform)
 
 BASEPATH = Path("tests-data")
 
@@ -102,6 +103,63 @@ class TurbojpegTest(unittest.TestCase):
             for path in paths:
                 bytes_result = decompress(path.read_bytes())
                 arr_result = np.array(bytes_result, copy=False)
+
+    def test_decompress_header(self):
+        paths = sorted(BASEPATH.glob("*.jpg"))
+        truths = [
+            {
+                "width": 256,
+                "height": 256,
+                "subsamp": 2,
+                "colorspace": CS.YCbCr,
+                "precision": 8,
+                "progressive": 0,
+                "lossless": 0,
+                "xdensity": 1,
+                "ydensity": 1,
+                "densityunits": DU.UNKNOWN,
+            },
+            {
+                "width": 256,
+                "height": 256,
+                "subsamp": 2,
+                "colorspace": CS.YCbCr,
+                "precision": 8,
+                "progressive": 0,
+                "lossless": 0,
+                "xdensity": 1,
+                "ydensity": 1,
+                "densityunits": DU.UNKNOWN,
+            },
+            {
+                "width": 256,
+                "height": 256,
+                "subsamp": 3,
+                "colorspace": CS.GRAY,
+                "precision": 8,
+                "progressive": 0,
+                "lossless": 0,
+                "xdensity": 1,
+                "ydensity": 1,
+                "densityunits": DU.UNKNOWN,
+            },
+            {
+                "width": 256,
+                "height": 256,
+                "subsamp": 3,
+                "colorspace": CS.GRAY,
+                "precision": 8,
+                "progressive": 0,
+                "lossless": 0,
+                "xdensity": 1,
+                "ydensity": 1,
+                "densityunits": DU.UNKNOWN,
+            },
+        ]
+        self.assertEqual(len(truths), len(paths))
+        for truth, path in zip(truths, paths):
+            result = decompress_header(path.read_bytes())
+            self.assertEqual(truth, result)
 
 
 if __name__ == "__main__":

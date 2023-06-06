@@ -7,6 +7,7 @@ extern "C" {
 }
 
 namespace py = pybind11;
+using namespace pybind11::literals;
 
 enum class DensityUnits : int { unknown = 0, ppi = 1, ppcm = 2 };
 
@@ -111,11 +112,11 @@ py::bytes compress(py::buffer img, int quality, TJSAMP subsamp, TJCS colorspace,
                                "dimension or set width and height");
     }
   } else if (bi.ndim == 2) {
-    height = bi.shape[0];
-    width = bi.shape[1];
+    height = static_cast<int>(bi.shape[0]);
+    width = static_cast<int>(bi.shape[1]);
   } else if (bi.ndim == 3) {
-    height = bi.shape[0];
-    width = bi.shape[1];
+    height = static_cast<int>(bi.shape[0]);
+    width = static_cast<int>(bi.shape[1]);
   } else {
     std::stringstream ss;
     ss << "Unsupported number of dimensions: " << bi.ndim;
@@ -201,6 +202,53 @@ py::bytes compress(py::buffer img, int quality, TJSAMP subsamp, TJCS colorspace,
   return out;
 }
 
+py::dict decompress_header(py::buffer jpeg) {
+  const unsigned char *jpegBuf;
+  size_t jpegSize;
+  tjhandle tjInstance;
+  int result;
+  int width, height, precision, progressive, lossless, xdensity, ydensity;
+  TJCS colorspace;
+  TJSAMP subsamp;
+  DensityUnits densityunits;
+
+  tjInstance = tj3Init(TJINIT_DECOMPRESS);
+  if (tjInstance == NULL) {
+    throw std::runtime_error(tj3GetErrorStr(tjInstance));
+  }
+
+  py::buffer_info bi = jpeg.request();
+
+  jpegBuf = reinterpret_cast<unsigned char *>(bi.ptr);
+  jpegSize = bi.size;
+
+  result = tj3DecompressHeader(tjInstance, jpegBuf, jpegSize);
+  if (result != 0) {
+    throw std::runtime_error(tj3GetErrorStr(tjInstance));
+  }
+
+  width = tj3Get(tjInstance, TJPARAM_JPEGWIDTH);
+  height = tj3Get(tjInstance, TJPARAM_JPEGHEIGHT);
+  subsamp = static_cast<TJSAMP>(tj3Get(tjInstance, TJPARAM_SUBSAMP));
+  colorspace = static_cast<TJCS>(tj3Get(tjInstance, TJPARAM_COLORSPACE));
+  precision = tj3Get(tjInstance, TJPARAM_PRECISION);
+  progressive = tj3Get(tjInstance, TJPARAM_PROGRESSIVE);
+  lossless = tj3Get(tjInstance, TJPARAM_LOSSLESS);
+  xdensity = tj3Get(tjInstance, TJPARAM_XDENSITY);
+  ydensity = tj3Get(tjInstance, TJPARAM_YDENSITY);
+  densityunits =
+      static_cast<DensityUnits>(tj3Get(tjInstance, TJPARAM_DENSITYUNITS));
+
+  py::dict out =
+      py::dict("width"_a = width, "height"_a = height, "subsamp"_a = subsamp,
+               "colorspace"_a = colorspace, "precision"_a = precision,
+               "progressive"_a = progressive, "lossless"_a = lossless,
+               "xdensity"_a = xdensity, "ydensity"_a = ydensity,
+               "densityunits"_a = densityunits);
+  tj3Destroy(tjInstance);
+
+  return out;
+}
 TjImage decompress(py::buffer jpeg, TJPF pixelformat, bool fastupsample,
                    bool fastdct) {
 
@@ -209,11 +257,11 @@ TjImage decompress(py::buffer jpeg, TJPF pixelformat, bool fastupsample,
   unsigned char *imgBuf;
   size_t jpegSize, imgSize;
   int result;
-  int width, height, subsamp, precision, progressive, lossless, xdensity,
-      ydensity;
+  int width, height, precision, progressive, lossless, xdensity, ydensity;
   int channels;
   TJCS colorspace;
   DensityUnits densityunits;
+  TJSAMP subsamp;
 
   tjInstance = tj3Init(TJINIT_DECOMPRESS);
   if (tjInstance == NULL) {
@@ -238,7 +286,7 @@ TjImage decompress(py::buffer jpeg, TJPF pixelformat, bool fastupsample,
 
   width = tj3Get(tjInstance, TJPARAM_JPEGWIDTH);
   height = tj3Get(tjInstance, TJPARAM_JPEGHEIGHT);
-  subsamp = tj3Get(tjInstance, TJPARAM_SUBSAMP);
+  subsamp = static_cast<TJSAMP>(tj3Get(tjInstance, TJPARAM_SUBSAMP));
   colorspace = static_cast<TJCS>(tj3Get(tjInstance, TJPARAM_COLORSPACE));
   precision = tj3Get(tjInstance, TJPARAM_PRECISION);
   progressive = tj3Get(tjInstance, TJPARAM_PROGRESSIVE);
@@ -453,6 +501,11 @@ PYBIND11_MODULE(turbojpeg, m) {
         py::arg("ydensity") = 1,
         py::arg("densityunits") = DensityUnits::unknown, py::arg("width") = -1,
         py::arg("height") = -1, py::arg("pixelformat") = TJPF_UNKNOWN);
+
+  m.def("decompress_header", &decompress_header,
+        "Decompress JPEG. If pixelformat is set to PF.UNKNOWN (the default), "
+        "an appropriate one is chosen automatically.",
+        py::arg("jpeg"));
 
   m.def("decompress", &decompress,
         "Decompress JPEG. If pixelformat is set to PF.UNKNOWN (the default), "
