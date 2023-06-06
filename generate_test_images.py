@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 from PIL import Image
 
@@ -31,10 +33,15 @@ def color_random():
     return arr
 
 
-if __name__ == "__main__":
+def generate_test_images(basepath: Path):
     pics = [gray_random, gray_gradient, color_random, color_gradient]
 
     for func in pics:
         arr = func()
         img = Image.fromarray(arr)
-        img.save(f"tests/{func.__name__}.jpg", quality=90)
+        img.save(basepath / f"{func.__name__}.png")
+        img.save(basepath / f"{func.__name__}.jpg", quality=90)
+
+
+if __name__ == "__main__":
+    generate_test_images(Path("tests-data"))

@@ -1,7 +1,11 @@
+*.bak
+
 *.pyc
 __pycache__
 *.egg-info
 
 build/
+dist/
 libjpeg-turbo-build/
 CMakeFiles/
+tests-data/

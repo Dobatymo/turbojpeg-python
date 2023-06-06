@@ -10,7 +10,7 @@ ext_modules = [
         include_dirs=["libjpeg-turbo", "libjpeg-turbo-build"],
         library_dirs=["libjpeg-turbo-build"],
         libraries=["turbojpeg"],
-        cxx_std=20,
+        cxx_std=17,
     ),
 ]
 
@@ -25,8 +25,12 @@ setup(
     url="https://github.com/Dobatymo/turbojpeg-python",
     description="Python bindungs for libjpeg-turbo using pybind11",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     ext_modules=ext_modules,
     cmdclass={"build_ext": build_ext},
     zip_safe=False,
     python_requires=">=3.7",
+    extras_require={
+        "test": ["Pillow", "numpy", "scikit-image"],
+    },
 )

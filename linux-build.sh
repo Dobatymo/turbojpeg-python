@@ -9,4 +9,3 @@ cd libjpeg-turbo-build
 cmake -G"Unix Makefiles" ../libjpeg-turbo
 make
 cd ..
-ls libjpeg-turbo-build
