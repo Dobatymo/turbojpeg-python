@@ -59,6 +59,11 @@ public:
           {width * channels * itemsize, channels * itemsize, itemsize});
     }
   }
+
+  py::dict array_interface() {
+    return py::dict("shape"_a = py::make_tuple(height, width, channels),
+                    "typestr"_a = py::str("|u1"), "version"_a = 3);
+  }
 };
 
 py::bytes compress(py::buffer img, int quality, TJSAMP subsamp, TJCS colorspace,
@@ -489,7 +494,8 @@ PYBIND11_MODULE(turbojpeg, m) {
       .def_readonly("colorspace", &TjImage::colorspace)
       .def_readonly("xdensity", &TjImage::xdensity)
       .def_readonly("ydensity", &TjImage::ydensity)
-      .def_readonly("densityunits", &TjImage::densityunits);
+      .def_readonly("densityunits", &TjImage::densityunits)
+      .def_property_readonly("__array_interface__", &TjImage::array_interface);
 
   m.def("compress", &compress, "Compress raw image", py::arg("img"),
         py::arg("quality"), py::arg("subsamp"),
