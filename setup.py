@@ -19,7 +19,7 @@ with open("readme.md", encoding="utf-8") as fr:
 
 setup(
     name="turbojpeg",
-    version="0.0.1",
+    version="0.0.2",
     author="Dobatymo",
     author_email="Dobatymo@users.noreply.github.com",
     url="https://github.com/Dobatymo/turbojpeg-python",

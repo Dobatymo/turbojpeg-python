@@ -76,6 +76,15 @@ class TurbojpegTest(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, r"Unsupported buffer format: d"):
             decompress(np.array([], dtype=np.float64))
 
+    def test_decompress_warnings(self):
+        data = (BASEPATH / "warnings/gray_gradient_mod1.jpg").read_bytes()
+        result = decompress(data)
+
+        with self.assertRaisesRegex(
+            RuntimeError, r"Corrupt JPEG data: 1 extraneous bytes before marker 0xd9"
+        ):
+            result = decompress(data, raise_on_warnings=True)
+
     def test_decompress_ssim(self):
         paths = sorted(BASEPATH.glob("*.jpg"))
         for path in paths:

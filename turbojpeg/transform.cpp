@@ -255,7 +255,7 @@ py::dict decompress_header(py::buffer jpeg) {
   return out;
 }
 TjImage decompress(py::buffer jpeg, TJPF pixelformat, bool fastupsample,
-                   bool fastdct) {
+                   bool fastdct, bool raise_on_warnings) {
 
   tjhandle tjInstance;
   const unsigned char *jpegBuf;
@@ -342,7 +342,9 @@ TjImage decompress(py::buffer jpeg, TJPF pixelformat, bool fastupsample,
   result =
       tj3Decompress8(tjInstance, jpegBuf, jpegSize, imgBuf, 0, pixelformat);
   if (result != 0) {
-    throw std::runtime_error(tj3GetErrorStr(tjInstance));
+    if (raise_on_warnings || tj3GetErrorCode(tjInstance) == TJERR_FATAL) {
+      throw std::runtime_error(tj3GetErrorStr(tjInstance));
+    }
   }
 
   tj3Destroy(tjInstance);
@@ -517,7 +519,8 @@ PYBIND11_MODULE(turbojpeg, m) {
         "Decompress JPEG. If pixelformat is set to PF.UNKNOWN (the default), "
         "an appropriate one is chosen automatically.",
         py::arg("jpeg"), py::arg("pixelformat") = TJPF_UNKNOWN,
-        py::arg("fastupsample") = false, py::arg("fastdct") = false);
+        py::arg("fastupsample") = false, py::arg("fastdct") = false,
+        py::arg("raise_on_warnings") = false);
 
   m.def("transform", &transform, "Losslessly transform JPEG", py::arg("jpeg"),
         py::arg("op") = TJXOP_NONE, py::arg("x") = -1, py::arg("y") = -1,

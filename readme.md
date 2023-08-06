@@ -43,3 +43,7 @@ with open("arithmetic.jpg", "xb") as fw:
 The Python `setup.py` expects the `libjpeg-turbo` binaries in `libjpeg-turbo-build`. You can either build it yourself or download precompiled binaries. For more details see <https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/BUILDING.md>.
 
 GitHub actions CI builds wheels for Windows 32 and 64-bit, manylinux 64-bit, musllinux 64-bit and MacOS 64-bit. 32-bit Linux builds fail due some weird NASM error. Not all wheels are tested, since some of the test dependencies are not available for all platforms.
+
+## Run tests
+
+`python -m unittest discover -s tests`
