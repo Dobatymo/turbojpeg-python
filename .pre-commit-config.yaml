@@ -1,37 +1,49 @@
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: 'v4.4.0'
+  rev: v4.4.0
   hooks:
   - id: check-added-large-files
   - id: check-case-conflict
   - id: check-merge-conflict
   - id: check-symlinks
+  - id: check-json
   - id: check-toml
   - id: check-yaml
+  - id: debug-statements
   - id: detect-private-key
   - id: end-of-file-fixer
   - id: mixed-line-ending
-    args: ["--fix=no"]
+    args: [--fix=no]
+  - id: requirements-txt-fixer
   - id: trailing-whitespace
-    args: ["--markdown-linebreak-ext=md"]
+    args: [--markdown-linebreak-ext=md]
+- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+  rev: v2.10.0
+  hooks:
+  - id: pretty-format-yaml
+    args: [--autofix]
 - repo: https://github.com/pre-commit/mirrors-clang-format
-  rev: v16.0.4
+  rev: v16.0.6
   hooks:
   - id: clang-format
+- repo: https://github.com/asottile/pyupgrade
+  rev: v3.10.1
+  hooks:
+  - id: pyupgrade
+    args: [--py37-plus]
+- repo: https://github.com/psf/black
+  rev: 23.7.0
+  hooks:
+  - id: black
+- repo: https://github.com/PyCQA/isort
+  rev: 5.12.0
+  hooks:
+  - id: isort
+- repo: https://github.com/pycqa/flake8
+  rev: 6.1.0
+  hooks:
+  - id: flake8
 - repo: https://github.com/Yelp/detect-secrets
   rev: v1.4.0
   hooks:
   - id: detect-secrets
-- repo: https://github.com/asottile/pyupgrade
-  rev: 'v3.4.0'
-  hooks:
-  - id: pyupgrade
-    args: ["--py37-plus"]
-- repo: https://github.com/psf/black
-  rev: '23.3.0'
-  hooks:
-  - id: black
-- repo: https://github.com/PyCQA/isort
-  rev: '5.12.0'
-  hooks:
-  - id: isort

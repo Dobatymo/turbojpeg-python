@@ -7,9 +7,7 @@ import numpy as np
 from PIL import Image
 from skimage.metrics import structural_similarity
 
-import turbojpeg
-from turbojpeg import (CS, DU, OP, PF, SAMP, compress, decompress,
-                       decompress_header, transform)
+from turbojpeg import CS, DU, OP, SAMP, compress, decompress, decompress_header, transform
 
 BASEPATH = Path("tests-data")
 
@@ -68,9 +66,7 @@ class TurbojpegTest(unittest.TestCase):
             self.assertAlmostEqual(ssim, 1.0)
 
     def test_decompress_fail(self):
-        with self.assertRaisesRegex(
-            RuntimeError, r"tj3DecompressHeader\(\): Invalid argument"
-        ):
+        with self.assertRaisesRegex(RuntimeError, r"tj3DecompressHeader\(\): Invalid argument"):
             decompress(b"")
 
         with self.assertRaisesRegex(RuntimeError, r"Unsupported buffer format: d"):
@@ -78,12 +74,10 @@ class TurbojpegTest(unittest.TestCase):
 
     def test_decompress_warnings(self):
         data = (BASEPATH / "warnings/gray_gradient_mod1.jpg").read_bytes()
-        result = decompress(data)
+        decompress(data)
 
-        with self.assertRaisesRegex(
-            RuntimeError, r"Corrupt JPEG data: 1 extraneous bytes before marker 0xd9"
-        ):
-            result = decompress(data, raise_on_warnings=True)
+        with self.assertRaisesRegex(RuntimeError, r"Corrupt JPEG data: 1 extraneous bytes before marker 0xd9"):
+            decompress(data, raise_on_warnings=True)
 
     def test_decompress_ssim(self):
         paths = sorted(BASEPATH.glob("*.jpg"))
@@ -111,7 +105,7 @@ class TurbojpegTest(unittest.TestCase):
         for i in range(10):  # fixme: check mem growth
             for path in paths:
                 bytes_result = decompress(path.read_bytes())
-                arr_result = np.array(bytes_result, copy=False)
+                np.array(bytes_result, copy=False)
 
     def test_decompress_header(self):
         paths = sorted(BASEPATH.glob("*.jpg"))

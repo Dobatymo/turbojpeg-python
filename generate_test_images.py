@@ -11,15 +11,9 @@ def gray_gradient():
 
 def color_gradient():
     arr = np.empty((256, 256, 3), dtype=np.uint8)
-    arr[..., 0] = np.broadcast_to(
-        np.arange(0, 256, dtype=np.uint8).reshape(1, 256), (256, 256)
-    ).T
-    arr[..., 1] = np.broadcast_to(
-        np.arange(0, 256, dtype=np.uint8).reshape(1, 256), (256, 256)
-    )
-    arr[..., 2] = np.broadcast_to(
-        np.arange(255, -1, -1, dtype=np.uint8).reshape(1, 256), (256, 256)
-    )
+    arr[..., 0] = np.broadcast_to(np.arange(0, 256, dtype=np.uint8).reshape(1, 256), (256, 256)).T
+    arr[..., 1] = np.broadcast_to(np.arange(0, 256, dtype=np.uint8).reshape(1, 256), (256, 256))
+    arr[..., 2] = np.broadcast_to(np.arange(255, -1, -1, dtype=np.uint8).reshape(1, 256), (256, 256))
     return arr
 
 
