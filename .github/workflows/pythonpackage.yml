@@ -17,11 +17,11 @@ jobs:
   build_wheels_linux:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: 'true'
     - name: Build wheels
-      uses: pypa/cibuildwheel@v2.12.3
+      uses: pypa/cibuildwheel@v2.19.2
       env:
         CIBW_BEFORE_ALL: sh linux-build.sh
         CIBW_BEFORE_BUILD: ls {project}/libjpeg-turbo-build
@@ -39,11 +39,11 @@ jobs:
   build_wheels_macos:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: 'true'
     - name: Build wheels
-      uses: pypa/cibuildwheel@v2.12.3
+      uses: pypa/cibuildwheel@v2.19.2
       env:
         CIBW_BEFORE_ALL: sh macos-build.sh
         CIBW_BEFORE_BUILD: ls {project}/libjpeg-turbo-build
@@ -64,10 +64,10 @@ jobs:
         - AMD64
         - x86
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: 'true'
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.8'
     - uses: ilammy/msvc-dev-cmd@v1
@@ -84,7 +84,7 @@ jobs:
         nmake
         cd ..
     - name: Build wheels
-      uses: pypa/cibuildwheel@v2.12.3
+      uses: pypa/cibuildwheel@v2.19.2
       env:
         CIBW_SKIP: cp36-* pp*
         CIBW_ARCHS_WINDOWS: ${{ matrix.arch }}
@@ -92,7 +92,7 @@ jobs:
         CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: python -m delvewheel repair -w {dest_dir} {wheel} --add-path libjpeg-turbo-build --no-dll vcruntime140_1.dll;msvcp140.dll
         CIBW_BEFORE_TEST: python -m pip install -r requirements-dev.txt && python generate_test_images.py
         CIBW_TEST_COMMAND: cd /d {project} && python -m unittest discover -s tests
-        CIBW_TEST_SKIP: cp38-win32 cp39-win32 cp310-win32 cp311-win32   # cp37-win32 has wheels!
+        CIBW_TEST_SKIP: cp38-win32 cp39-win32 cp310-win32 cp311-win32 cp312-win32  # cp37-win32 has wheels!
         CIBW_TEST_EXTRAS: test
     - uses: actions/upload-artifact@v3
       with:

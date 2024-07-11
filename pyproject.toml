@@ -1,13 +1,19 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "pybind11>=2.10.0",
-]
 build-backend = "setuptools.build_meta"
+requires = [
+  "pybind11>=2.10",
+  "setuptools>=42",
+]
 
 [tool.black]
+line-length = 120
+
+[tool.ruff]
 line-length = 120
 
 [tool.isort]
 profile = "black"
 line_length = 120
+
+[tool.bandit]
+skips = [ "B101" ]

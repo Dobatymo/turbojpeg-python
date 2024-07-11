@@ -102,7 +102,7 @@ class TurbojpegTest(unittest.TestCase):
 
     def test_decompress_memory(self):
         paths = sorted(BASEPATH.glob("*.jpg"))
-        for i in range(10):  # fixme: check mem growth
+        for _i in range(10):  # fixme: check mem growth
             for path in paths:
                 bytes_result = decompress(path.read_bytes())
                 np.array(bytes_result, copy=False)
