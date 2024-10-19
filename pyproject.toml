@@ -5,6 +5,37 @@ requires = [
   "setuptools>=42",
 ]
 
+[project]
+name = "turbojpeg"
+version = "0.0.2"
+description = "Python bindungs for libjpeg-turbo using pybind11"
+readme = "readme.md"
+license = { file = "LICENSE" }
+authors = [ { name = "Dobatymo" } ]
+requires-python = ">=3.7"
+classifiers = [
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+optional-dependencies.test = [
+  "numpy",
+  "pillow",
+  "scikit-image",
+]
+urls.Homepage = "https://github.com/Dobatymo/turbojpeg-python"
+
+[tool.setuptools]
+py-modules = [ "turbojpeg" ]
+
+[tool.cibuildwheel]
+dependency-versions = "pinned"
+
 [tool.black]
 line-length = 120
 

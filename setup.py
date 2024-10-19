@@ -14,23 +14,8 @@ ext_modules = [
     ),
 ]
 
-with open("readme.md", encoding="utf-8") as fr:
-    long_description = fr.read()
-
 setup(
-    name="turbojpeg",
-    version="0.0.2",
-    author="Dobatymo",
-    author_email="Dobatymo@users.noreply.github.com",
-    url="https://github.com/Dobatymo/turbojpeg-python",
-    description="Python bindungs for libjpeg-turbo using pybind11",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
     ext_modules=ext_modules,
     cmdclass={"build_ext": build_ext},
     zip_safe=False,
-    python_requires=">=3.7",
-    extras_require={
-        "test": ["Pillow", "numpy", "scikit-image"],
-    },
 )
