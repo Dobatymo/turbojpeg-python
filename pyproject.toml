@@ -5,6 +5,9 @@ requires = [
   "setuptools>=42",
 ]
 
+[tool.cibuildwheel]
+dependency-versions = "pinned"
+
 [tool.black]
 line-length = 120
 

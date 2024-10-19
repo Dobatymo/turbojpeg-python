@@ -21,7 +21,7 @@ jobs:
       with:
         submodules: 'true'
     - name: Build wheels
-      uses: pypa/cibuildwheel@v2.19.2
+      uses: pypa/cibuildwheel@v2.20.0
       env:
         CIBW_BEFORE_ALL: sh linux-build.sh
         CIBW_BEFORE_BUILD: ls {project}/libjpeg-turbo-build
@@ -43,7 +43,7 @@ jobs:
       with:
         submodules: 'true'
     - name: Build wheels
-      uses: pypa/cibuildwheel@v2.19.2
+      uses: pypa/cibuildwheel@v2.20.0
       env:
         CIBW_BEFORE_ALL: sh macos-build.sh
         CIBW_BEFORE_BUILD: ls {project}/libjpeg-turbo-build
@@ -84,7 +84,7 @@ jobs:
         nmake
         cd ..
     - name: Build wheels
-      uses: pypa/cibuildwheel@v2.19.2
+      uses: pypa/cibuildwheel@v2.20.0
       env:
         CIBW_SKIP: cp36-* pp*
         CIBW_ARCHS_WINDOWS: ${{ matrix.arch }}
