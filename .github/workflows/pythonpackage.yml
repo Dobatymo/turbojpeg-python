@@ -114,5 +114,6 @@ jobs:
         merge-multiple: true
     - uses: pypa/gh-action-pypi-publish@release/v1
       with:
+        skip-existing: true
         user: __token__
         password: ${{ secrets.pypi_password }}

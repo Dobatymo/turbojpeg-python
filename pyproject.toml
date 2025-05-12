@@ -10,7 +10,6 @@ name = "turbojpeg"
 version = "0.0.2"
 description = "Python bindungs for libjpeg-turbo using pybind11"
 readme = "readme.md"
-license = { file = "LICENSE" }
 authors = [ { name = "Dobatymo" } ]
 requires-python = ">=3.7"
 classifiers = [
